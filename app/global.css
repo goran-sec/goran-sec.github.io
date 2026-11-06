@@ -1,0 +1,396 @@
+@import "tailwindcss";
+@import "highlight.js/styles/base16/gruvbox-dark-hard.css";
+
+@theme {
+  /* Latin letters use Sometype Mono; Arabic-script letters (Kurdish) fall
+     through to Noto Sans Arabic, which has every Sorani letter. */
+  --font-mono: "Sometype Mono Variable", "Noto Sans Arabic Variable",
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --color-gruvbox-lime: #b8bb26;
+  --color-gruvbox-orange: #fb4934;
+  --color-gruvbox-purple: #d3869b;
+  --color-gruvbox-blue: #83a598;
+  --color-stone-50: #faf7f2;
+  --color-stone-100: #f2eee2;
+  --color-stone-200: #e5dbc3;
+  --color-stone-300: #d5c4a1;
+  --color-stone-400: #c1a476;
+  --color-stone-500: #b48d5b;
+  --color-stone-600: #a77b4f;
+  --color-stone-700: #8b6443;
+  --color-stone-800: #71523b;
+  --color-stone-900: #5c4432;
+  --color-stone-950: #312219;
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+html {
+  @apply bg-neutral-950 text-stone-300 selection:bg-gruvbox-lime selection:text-neutral-950;
+  min-width: 360px;
+}
+
+body {
+  @apply bg-neutral-950;
+}
+
+p {
+  @apply text-stone-300/80;
+}
+
+/* Everything is right-aligned, whichever language it is in. English text is
+   left-to-right inside, so its punctuation stays correct, but its lines still
+   hug the right edge. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+blockquote,
+.list-text {
+  text-align: right;
+}
+
+.hljs {
+  @apply bg-neutral-950 selection:bg-gruvbox-lime selection:text-neutral-950;
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+}
+
+.prose .anchor {
+  @apply absolute invisible no-underline;
+
+  margin-inline-start: -1em;
+  padding-inline-end: 0.5em;
+  width: 80%;
+  max-width: 700px;
+  cursor: pointer;
+}
+
+.anchor:hover {
+  @apply visible;
+}
+
+.prose a {
+  @apply underline transition-all text-stone-300 decoration-stone-300 underline-offset-2 decoration-[0.1em];
+}
+
+.prose .anchor:after {
+  @apply text-gruvbox-lime;
+  content: "#";
+}
+
+.prose *:hover > .anchor {
+  @apply visible;
+}
+
+/* Code blocks stay left-to-right and left-aligned, but the block itself sits
+   in the right-to-left page like everything else. */
+.prose pre {
+  @apply overflow-x-auto border border-stone-300/20 border-[0.1em] text-sm p-2;
+  text-align: left;
+}
+
+.prose code {
+  @apply text-xs;
+}
+
+.prose pre code {
+  @apply p-0;
+  border: initial;
+  line-height: 1.5;
+}
+
+.prose code span {
+  @apply font-medium;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* A picture in a post is a button: click it to see it large. */
+.post-image-btn {
+  display: block;
+  max-width: 100%;
+  margin: 1rem 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.post-image-btn:focus-visible {
+  outline: 1px solid rgb(213 196 161 / 0.6);
+  outline-offset: 3px;
+}
+
+.post-image-btn img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid rgb(213 196 161 / 0.15);
+  transition: border-color 0.15s;
+}
+
+.post-image-btn:hover img {
+  border-color: rgb(213 196 161 / 0.4);
+}
+
+/* The large view: dark screen, picture fitted to it, click anywhere to close. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(10 10 10 / 0.94);
+  cursor: zoom-out;
+  animation: lightbox-in 0.15s ease-out;
+}
+
+.lightbox img {
+  display: block;
+  object-fit: contain;
+  background: #0a0a0a;
+  border: 1px solid rgb(213 196 161 / 0.2);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem; /* the site is right-aligned, so the close button is too */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgb(213 196 161 / 0.3);
+  background: rgb(10 10 10 / 0.8);
+  color: rgb(213 196 161 / 0.8);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.lightbox-close:hover,
+.lightbox-close:focus-visible {
+  color: #d5c4a1;
+  border-color: rgb(213 196 161 / 0.7);
+  outline: none;
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox {
+    animation: none;
+  }
+}
+
+.prose p {
+  @apply my-4 text-stone-300/80 text-sm;
+}
+
+.prose h1 {
+  @apply text-4xl font-bold tracking-tight mt-6 mb-2;
+}
+
+.prose h2 {
+  @apply text-xl font-bold tracking-tight mt-6 mb-2;
+}
+
+.prose h3 {
+  @apply text-base font-bold tracking-tight mt-6 mb-2;
+}
+
+.prose h4 {
+  @apply text-lg font-bold tracking-tight mt-6 mb-2;
+}
+
+.prose strong {
+  @apply font-bold text-gruvbox-orange;
+}
+
+.prose ul {
+  @apply list-disc text-sm text-stone-300/80;
+  padding-inline-start: 1.5rem;
+}
+
+.prose ol {
+  @apply list-decimal text-sm text-stone-300/80;
+  padding-inline-start: 1.5rem;
+}
+
+.prose blockquote {
+  @apply my-4 text-sm text-stone-300/80;
+  border-inline-start: 2px solid rgb(181 141 91 / 0.4);
+  padding-inline-start: 0.75rem;
+}
+
+.prose > :first-child {
+  /* Override removing top margin, causing layout shift */
+  margin-top: 1.25em !important;
+  margin-bottom: 1.25em !important;
+}
+
+/* The ASCII banner on the home page never shows a scrollbar. */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Code blocks: a thin, rounded scrollbar in the site's own muted tan,
+   with no track, instead of the browser's bright default. It brightens a
+   little when you point at it. */
+.prose pre,
+.hljs {
+  scrollbar-width: thin; /* Firefox, and browsers without the rules below */
+  scrollbar-color: rgb(213 196 161 / 0.35) transparent;
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .prose pre,
+  .hljs {
+    /* Hand control to the ::-webkit-scrollbar rules (Chrome, Edge, Safari). */
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+
+  .prose pre::-webkit-scrollbar,
+  .hljs::-webkit-scrollbar {
+    height: 8px;
+    background: transparent;
+  }
+
+  .prose pre::-webkit-scrollbar-track,
+  .hljs::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .prose pre::-webkit-scrollbar-thumb,
+  .hljs::-webkit-scrollbar-thumb {
+    background: rgb(213 196 161 / 0.3);
+    border-radius: 9999px;
+    /* An 8px bar with a transparent border shows as a slim 4px pill. */
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .prose pre::-webkit-scrollbar-thumb:hover,
+  .hljs::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(213 196 161 / 0.6);
+  }
+
+  .prose pre::-webkit-scrollbar-corner,
+  .hljs::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/* A little room under the code so the scrollbar doesn't touch the last line. */
+.prose pre code {
+  padding-bottom: 0.35rem;
+}
+
+/* Recent posts and the Posts list. Phone: the date follows the category and
+   the title sits on its own line below. Wide screen: three shared columns
+   (category, date, title) with the same gap between every row. In a
+   right-to-left page the first column is the one on the right. */
+.post-rows {
+  display: grid;
+  row-gap: 1rem;
+}
+
+.post-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  column-gap: 0.75rem;
+  row-gap: 0.25rem;
+}
+
+.post-cat {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1rem; /* one text line, so icon and text centre together */
+}
+
+.post-date {
+  flex-shrink: 0;
+}
+
+.post-title {
+  flex-basis: 100%;
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .post-rows {
+    grid-template-columns: max-content max-content minmax(0, 1fr);
+    column-gap: 1.5rem;
+  }
+
+  .post-row {
+    grid-column: 1 / -1;
+    flex-wrap: nowrap;
+  }
+
+  .post-title {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+@supports (grid-template-columns: subgrid) {
+  @media (min-width: 768px) {
+    /* Each row reuses the list's columns, so every row lines up. */
+    .post-row {
+      display: grid;
+      grid-template-columns: subgrid;
+    }
+  }
+}
+
+/* Remove Safari input shadow on mobile */
+input[type="text"],
+input[type="email"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+table {
+  display: block;
+  max-width: fit-content;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.title {
+  text-wrap: balance;
+}
