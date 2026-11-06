@@ -10,9 +10,6 @@ export default function NotFound() {
           (page not found)
         </span>
       </h1>
-      <p dir="ltr" className="mb-4 text-sm text-right">
-        The page you are looking for does not exist.
-      </p>
       <p dir="rtl" className="mb-4 text-sm text-right">
         ئەو پەڕەیەی دەتەوێت بیدۆزیتەوە بوونی نییە.
       </p>
